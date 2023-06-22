@@ -1,7 +1,7 @@
-export function ImageGalleryItem({ src, alt }) {
+export function ImageGalleryItem({ smallImg, lardeImg, tags }) {
   return (
-    <li class="gallery-item">
-      <img src="" alt="" />
+    <li className="gallery-item">
+      <img src={smallImg} alt={tags} />
     </li>
   );
 }
