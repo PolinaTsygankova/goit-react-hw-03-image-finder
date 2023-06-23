@@ -30,12 +30,6 @@ export class ImageGallery extends React.Component {
             images: res.hits,
             isButtonExist: this.state.currentPage < Math.ceil(res.total / 12),
           });
-
-          // if (this.state.isButtonExist === true) {
-          //   this.setState(prevState => ({
-          //     images: [...prevState.images, ...this.state.images],
-          //   }));
-          // }
         })
         .catch(error => {
           this.setState({ errorMessage: error.message });
