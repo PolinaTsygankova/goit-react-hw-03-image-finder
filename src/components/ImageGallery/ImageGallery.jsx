@@ -26,12 +26,16 @@ export class ImageGallery extends React.Component {
           throw new Error('Something goes wrong');
         })
         .then(res => {
-          console.log(res.hits);
-          this.setState({ images: res });
-          this.setState(prevState => ({
-            // images: [...prevState.images, ...this.state.images],
+          this.setState({
+            images: res.hits,
             isButtonExist: this.state.currentPage < Math.ceil(res.total / 12),
-          }));
+          });
+
+          // if (this.state.isButtonExist === true) {
+          //   this.setState(prevState => ({
+          //     images: [...prevState.images, ...this.state.images],
+          //   }));
+          // }
         })
         .catch(error => {
           this.setState({ errorMessage: error.message });
@@ -43,23 +47,22 @@ export class ImageGallery extends React.Component {
     this.setState(prevState => ({
       currentPage: prevState.currentPage + 1,
     }));
+
+    if (this.state.isButtonExist === true) {
+      this.setState(prevState => ({
+        images: [...prevState.images, ...this.state.images],
+      }));
+    }
   };
 
   render() {
     const { images, isButtonExist } = this.state;
 
-    // if (true) {
-    //   this.setState(prevState => ({
-    //     images: [...prevState.images, ...images],
-    //   }));
-    // }
-    //! NEED TO ADD PREV IMAGES TO NEXT IMAGES
-
     return (
       <>
         {images && (
           <ul className="gallery">
-            {images.hits.map(({ id, webformatURL, largeImageURL, tags }) => {
+            {images.map(({ id, webformatURL, largeImageURL, tags }) => {
               return (
                 <ImageGalleryItem
                   key={id}
