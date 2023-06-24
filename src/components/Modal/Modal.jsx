@@ -1,16 +1,24 @@
+import React from 'react';
 import { Backdrop, StyledModal } from './Modal.styled';
 
-export function Modal({ largeImage, toggleModal }) {
-  const handleCloseModal = () => {
-    toggleModal();
-    console.log(largeImage);
-  };
+export class Modal extends React.Component {
+  componentDidMount() {
+    window.addEventListener('keydown', e => {
+      if (e.code === 'Escape') {
+        this.props.toggleModal();
+        console.log('message');
+      }
+    });
+  }
 
-  return (
-    <Backdrop className="overlay" onClick={handleCloseModal}>
-      <StyledModal className="modal">
-        <img src={largeImage} alt="" />
-      </StyledModal>
-    </Backdrop>
-  );
+  render() {
+    const { largeImage, toggleModal } = this.props;
+    return (
+      <Backdrop className="overlay" onClick={toggleModal}>
+        <StyledModal className="modal">
+          <img src={largeImage} alt="LargeImage" />
+        </StyledModal>
+      </Backdrop>
+    );
+  }
 }
