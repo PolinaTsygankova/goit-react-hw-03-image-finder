@@ -1,22 +1,48 @@
 import React from 'react';
+import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from './../ImageGalleryItem/ImageGalleryItem';
+import { Button } from './../Button/Button';
+import { Loader } from '../Loader.jsx/Loader';
+import { Modal } from './../Modal/Modal';
+
+const STATUS = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  REJECTED: 'rejected',
+  RESOLVED: 'resolved',
+};
+
+const INITIAL_STATE = {
+  images: null,
+  errorMessage: '',
+  currentPage: 1,
+  showModal: false,
+  status: STATUS.IDLE,
+  lardgImg: '',
+};
 
 export class ImageGallery extends React.Component {
-  state = {
-    images: null,
-    errorMessage: '',
-    currentPage: 1,
-    isButtonExist: false,
-  };
+  state = INITIAL_STATE;
 
   componentDidUpdate(prevProps, prevState) {
+    const { textQuery } = this.props;
+    const { currentPage } = this.state;
+
+    if (prevProps.textQuery !== textQuery) {
+      this.setState({
+        INITIAL_STATE,
+      });
+      this.setState({
+        status: STATUS.PENDING,
+      });
+    }
     if (
       this.props !== prevProps ||
       this.state !== prevState ||
-      this.state.currentPage !== prevProps.currentPage
-    ) {
+      currentPage !== prevProps.currentPage
+    )
       fetch(
-        `https://pixabay.com/api/?q=${this.props.textQuery}&page=${this.state.currentPage}&key=35869427-65f66342165db7316d77cd90d&image_type=photo&orientation=horizontal&per_page=12`
+        `https://pixabay.com/api/?q=${textQuery}&page=${currentPage}&key=35869427-65f66342165db7316d77cd90d&image_type=photo&orientation=horizontal&per_page=12`
       )
         .then(res => {
           if (res.ok) {
@@ -28,13 +54,16 @@ export class ImageGallery extends React.Component {
         .then(res => {
           this.setState({
             images: res.hits,
-            isButtonExist: this.state.currentPage < Math.ceil(res.total / 12),
+            isButtonExist: currentPage < Math.ceil(res.total / 12),
+            status: STATUS.RESOLVED,
           });
         })
         .catch(error => {
-          this.setState({ errorMessage: error.message });
+          this.setState({
+            errorMessage: error.message,
+            status: STATUS.REJECTED,
+          });
         });
-    }
   }
 
   incrementPageNumber = () => {
@@ -42,36 +71,62 @@ export class ImageGallery extends React.Component {
       currentPage: prevState.currentPage + 1,
     }));
 
-    if (this.state.isButtonExist === true) {
-      this.setState(prevState => ({
-        images: [...prevState.images, ...this.state.images],
-      }));
-    }
+    // if (this.state.isButtonExist === true) {
+    this.setState(prevState => ({
+      images: [...prevState.images, ...this.state.images],
+      isLoaderExist: true,
+    }));
+    // }
+  };
+
+  toggleModal = e => {
+    this.setState(prevState => ({
+      showModal: !prevState.showModal,
+    }));
+  };
+
+  getLargeImgForModal = largeImage => {
+    this.setState({
+      largeImage: largeImage,
+    });
+  };
+
+  getEvent = e => {
+    console.dir(e.currentTarget);
   };
 
   render() {
-    const { images, isButtonExist } = this.state;
+    const { images, status, showModal, largeImage } = this.state;
 
-    return (
-      <>
-        {images && (
-          <ul className="gallery">
-            {images.map(({ id, webformatURL, largeImageURL, tags }) => {
-              return (
-                <ImageGalleryItem
-                  key={id}
-                  smallImg={webformatURL}
-                  lardeImg={largeImageURL}
-                  tags={tags}
-                />
-              );
-            })}
-          </ul>
-        )}
-        {isButtonExist && (
-          <button onClick={this.incrementPageNumber}>Load more</button>
-        )}
-      </>
-    );
+    if (status === STATUS.PENDING) return <Loader></Loader>;
+    else if (status === STATUS.RESOLVED)
+      return (
+        <>
+          {/* <div onClick={this.getEvent}>=)</div> */}
+          {images && (
+            <Gallery className="gallery">
+              {images.map(({ id, webformatURL, largeImageURL, tags }) => {
+                this.setState({ largeImage });
+                return (
+                  <ImageGalleryItem
+                    key={id}
+                    smallImg={webformatURL}
+                    largeImg={largeImageURL}
+                    tags={tags}
+                    toggleModal={this.toggleModal}
+                    // onClick={this.getEvent}
+                  />
+                );
+              })}
+              {showModal && (
+                <Modal largeImage={largeImage} toggleModal={this.toggleModal} />
+                // console.log(largeImage)
+              )}
+            </Gallery>
+          )}
+          <Button incrementPageNumber={this.incrementPageNumber} />
+        </>
+      );
+    else if (status === STATUS.REJECTED) return alert('Error');
   }
 }
