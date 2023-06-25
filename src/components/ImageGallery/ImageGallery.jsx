@@ -76,7 +76,7 @@ export class ImageGallery extends React.Component {
     }));
 
     this.setState(prevState => ({
-      images: [...prevState.images, ...images],
+      images: [...images, ...prevState.images],
     }));
   };
 
@@ -124,4 +124,3 @@ export class ImageGallery extends React.Component {
     else if (status === STATUS.REJECTED) return alert('Error');
   }
 }
-

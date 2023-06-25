@@ -3,13 +3,18 @@ import { Backdrop, StyledModal } from './Modal.styled';
 
 export class Modal extends React.Component {
   componentDidMount() {
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Escape') {
-        this.props.toggleModal();
-        console.log('message');
-      }
-    });
+    window.addEventListener('keydown', this.onKeyDown);
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.onKeyDown);
+  }
+
+  onKeyDown = e => {
+    if (e.code === 'Escape') {
+      this.props.toggleModal();
+    }
+  };
 
   render() {
     const { largeImage, toggleModal } = this.props;
