@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Item, Photo } from './ImageGalleryItem.styled';
 
@@ -6,11 +7,11 @@ export function ImageGalleryItem({
   largeImg,
   tags,
   toggleModal,
-  getLargeImgForModal, 
+  getLargeImgForModal,
 }) {
   const handleClick = () => {
-    toggleModal(); 
-    getLargeImgForModal(largeImg); 
+    toggleModal();
+    getLargeImgForModal(largeImg);
   };
 
   return (
@@ -19,3 +20,11 @@ export function ImageGalleryItem({
     </Item>
   );
 }
+
+ImageGalleryItem.propTypes = {
+  largeImg: PropTypes.string.isRequired,
+  smallImg: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+  toggleModal: PropTypes.func.isRequired,
+  getLargeImgForModal: PropTypes.func.isRequired,
+};

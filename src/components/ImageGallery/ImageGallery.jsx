@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from './../ImageGalleryItem/ImageGalleryItem';
@@ -130,3 +131,7 @@ export class ImageGallery extends React.Component {
     else if (status === STATUS.REJECTED) return alert('Error');
   }
 }
+
+ImageGallery.propTypes = {
+  textQuery: PropTypes.string.isRequired,
+};

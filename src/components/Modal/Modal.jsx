@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Backdrop, StyledModal } from './Modal.styled';
 
@@ -18,6 +19,7 @@ export class Modal extends React.Component {
 
   render() {
     const { largeImage, toggleModal } = this.props;
+    console.log(typeof largeImage);
     return (
       <Backdrop className="overlay" onClick={toggleModal}>
         <StyledModal className="modal">
@@ -27,3 +29,8 @@ export class Modal extends React.Component {
     );
   }
 }
+
+Modal.propTypes = {
+  largeImage: PropTypes.string.isRequired,
+  toggleModal: PropTypes.func.isRequired,
+};
