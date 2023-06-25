@@ -19,7 +19,6 @@ export class Modal extends React.Component {
 
   render() {
     const { largeImage, toggleModal } = this.props;
-    console.log(typeof largeImage);
     return (
       <Backdrop className="overlay" onClick={toggleModal}>
         <StyledModal className="modal">
