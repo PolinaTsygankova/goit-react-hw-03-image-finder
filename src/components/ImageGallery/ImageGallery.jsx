@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 import { Gallery } from './ImageGallery.styled';
 import { ImageGalleryItem } from './../ImageGalleryItem/ImageGalleryItem';
 import { Button } from './../Button/Button';
@@ -39,9 +40,8 @@ export class ImageGallery extends React.Component {
     }
 
     if (
-      this.props !== prevProps ||
-      this.state !== prevState ||
-      currentPage !== prevProps.currentPage
+      textQuery !== prevProps.textQuery ||
+      currentPage !== prevState.currentPage
     ) {
       fetch(
         `https://pixabay.com/api/?q=${textQuery}&page=${currentPage}&key=35869427-65f66342165db7316d77cd90d&image_type=photo&orientation=horizontal&per_page=12`
@@ -54,6 +54,9 @@ export class ImageGallery extends React.Component {
           throw new Error('Something goes wrong');
         })
         .then(res => {
+          if (res.total === 0) {
+            toast.error(`Sorry, we dont have images with ${textQuery}`);
+          }
           this.setState({
             images: res.hits,
             isButtonExist: currentPage < Math.ceil(res.total / 12),
@@ -76,7 +79,7 @@ export class ImageGallery extends React.Component {
     }));
 
     this.setState(prevState => ({
-      images: [...images, ...prevState.images],
+      images: [...prevState.images, ...images],
     }));
   };
 
@@ -92,6 +95,8 @@ export class ImageGallery extends React.Component {
     });
   };
 
+  notify = () => toast('Wow so easy!');
+
   render() {
     const { images, status, showModal, largeImage, isButtonExist } = this.state;
 
@@ -99,6 +104,7 @@ export class ImageGallery extends React.Component {
     else if (status === STATUS.RESOLVED)
       return (
         <>
+          {/* {images === [] && toast('Wow so easy!')} */}
           {images && (
             <Gallery className="gallery">
               {images.map(({ id, webformatURL, largeImageURL, tags }) => (
