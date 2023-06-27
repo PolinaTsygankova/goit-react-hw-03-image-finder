@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React from 'react';
 import { Item, Photo } from './ImageGalleryItem.styled';
 
@@ -21,10 +21,10 @@ export function ImageGalleryItem({
   );
 }
 
-ImageGalleryItem.propTypes = {
-  largeImg: PropTypes.string.isRequired,
-  smallImg: PropTypes.string.isRequired,
-  tags: PropTypes.string.isRequired,
-  toggleModal: PropTypes.func.isRequired,
-  getLargeImgForModal: PropTypes.func.isRequired,
-};
+// ImageGalleryItem.propTypes = {
+//   largeImg: PropTypes.string.isRequired,
+//   smallImg: PropTypes.string.isRequired,
+//   tags: PropTypes.string.isRequired,
+//   // toggleModal: PropTypes.func.isRequired,
+//   getLargeImgForModal: PropTypes.func.isRequired,
+// };
