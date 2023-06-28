@@ -19,7 +19,7 @@ const STATUS = {
 };
 
 const INITIAL_STATE = {
-  images: null,
+  images: [],
   errorMessage: '',
   currentPage: 1,
   status: STATUS.IDLE,
@@ -31,29 +31,31 @@ export class App extends React.Component {
   state = INITIAL_STATE;
 
   componentDidUpdate(prevProps, prevState) {
-    const { currentPage, textQuery } = this.state;
+    const { textQuery, currentPage } = this.state;
 
-    if (textQuery === prevProps.textQuery) {
+    if (prevState.textQuery !== textQuery) {
       this.setState({
+        images: [],
+        currentPage: 1,
         INITIAL_STATE,
         status: STATUS.PENDING,
       });
     }
 
     if (
-      textQuery !== prevProps.textQuery ||
+      textQuery !== prevState.textQuery ||
       currentPage !== prevState.currentPage
     ) {
       fetchToGallery(textQuery, currentPage)
         .then(res => {
           if (res.total === 0) {
-            toast.error(`Sorry, we dont have images with ${textQuery}`);
+            toast.error(`Sorry, we don't have images with ${textQuery}`);
           }
-          this.setState({
-            images: res.hits,
+          this.setState(prevState => ({
+            images: [...prevState.images, ...res.hits],
             isButtonExist: currentPage < Math.ceil(res.total / 12),
             status: STATUS.RESOLVED,
-          });
+          }));
         })
         .catch(error => {
           this.setState({
